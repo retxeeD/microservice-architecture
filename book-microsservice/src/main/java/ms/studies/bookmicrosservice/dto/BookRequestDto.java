@@ -12,7 +12,7 @@ public class BookRequestDto{
     @NotNull(message = "O campo 'number' é obrigatório.")
     private Integer number;
 
-    public BookRequestDto(String name, int number) {
+    public BookRequestDto(String name, Integer number) {
         this.name = name;
         this.number = number;
     }
