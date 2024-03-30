@@ -74,10 +74,9 @@ public class ApplicationControllerAdvice {
         return new ApiErrors("O parametro '"+ ex.getVariableName() +"' é obrigatório na rota.");
     }
 
-    /**
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ApiErrors genericError(){
         return new ApiErrors("Ocorreu um erro inesperado, estamos trabalhando para resolver.");
-    }**/
+    }
 }

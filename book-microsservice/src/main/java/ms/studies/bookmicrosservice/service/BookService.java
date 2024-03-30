@@ -32,7 +32,7 @@ public class BookService {
     public BookResponseDto consult(Integer bookNumber){
         Optional<Book> consultResult = Optional.ofNullable(repository.findByNumber(bookNumber)
                 .orElseThrow(
-                        () -> new EntityNotFoundException("O livro de número " + bookNumber + " não foi encontrado.")
+                        () -> new EntityNotFoundException("O livro de número '"+ bookNumber +"' não foi encontrado.")
                 ));
         BookResponseDto book = mapper.bookToBookResponseDto(consultResult.orElse(null));
         return book;
