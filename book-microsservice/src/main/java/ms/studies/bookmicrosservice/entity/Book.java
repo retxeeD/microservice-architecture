@@ -4,12 +4,12 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
-import lombok.Data;
+import lombok.*;
 
 import java.util.UUID;
 
 @Entity
-@Data
+@AllArgsConstructor @NoArgsConstructor @Getter @Setter
 public class Book {
 
     @Id
@@ -22,7 +22,7 @@ public class Book {
     @Column(nullable = false, unique = true)
     private Integer number;
 
-    public Book(String name, int number) {
+    public Book(String name, Integer number) {
         this.name = name;
         this.number = number;
     }

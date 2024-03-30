@@ -1,5 +1,6 @@
 package ms.studies.bookmicrosservice.service;
 
+import jakarta.persistence.EntityNotFoundException;
 import ms.studies.bookmicrosservice.dto.BookRequestDto;
 import ms.studies.bookmicrosservice.dto.BookResponseDto;
 import ms.studies.bookmicrosservice.entity.Book;
@@ -14,8 +15,12 @@ import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
@@ -32,13 +37,8 @@ public class BookServiceTest {
     @InjectMocks
     BookService service;
 
-    @BeforeEach
-    public void setUp(){
-        mapper = new BookMapperImpl();
-    }
-
     @Test
-    void registerNewBookWithSuccess(){
+    void registerNewBook(){
         BookRequestDto requestDto = requestGenerate();
         Book book = bookGenerate();
 
@@ -51,7 +51,45 @@ public class BookServiceTest {
 
         assertNotNull(bookSaved.getId());
     }
+    @Test
+    void consultBookByNumber(){
+        Book book = bookGenerate();
+        when(repository.findByNumber(Mockito.any())).thenReturn(Optional.of(book));
 
+        ReflectionTestUtils.setField(service, "mapper", mapper);
+        ReflectionTestUtils.setField(service, "repository", repository);
+
+        BookResponseDto bookReturned = service.consult(book.getNumber());
+        assertNotNull(bookReturned);
+    }
+    @Test
+    void consultBookByNumberNotExist(){
+        Book book = bookGenerate();
+        when(repository.findByNumber(Mockito.any())).thenReturn(Optional.empty());
+
+        assertThrows(EntityNotFoundException.class, () -> {
+            service.consult(book.getNumber());
+        });
+    }
+    @Test
+    void consultAllBooks(){
+        Book book = bookGenerate();
+        when(repository.findAll()).thenReturn(Stream.of(book).toList());
+
+        ReflectionTestUtils.setField(service, "mapper", mapper);
+        ReflectionTestUtils.setField(service, "repository", repository);
+
+        List<BookResponseDto> bookResponseDtoList = service.consultAll();
+        assertNotNull(bookResponseDtoList);
+    }
+
+    @Test
+    void deleteBookById(){
+        Book book = bookGenerate();
+        when(repository.findById(Mockito.any())).thenReturn(Optional.of(book));
+        ReflectionTestUtils.setField(service, "repository", repository);
+        service.deleteBook(book.getId());
+    }
 
     private BookRequestDto requestGenerate(){
         return new BookRequestDto("Livro Teste", Math.abs(new Random().nextInt()));
