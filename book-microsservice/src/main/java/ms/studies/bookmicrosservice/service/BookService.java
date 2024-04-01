@@ -25,8 +25,7 @@ public class BookService {
 
     public BookResponseDto save(BookRequestDto bookRequestDto){
         Book book = mapper.bookRequestDtoToBook(bookRequestDto);
-        Book bookSaved = repository.save(book);
-        return mapper.bookToBookResponseDto(bookSaved);
+        return mapper.bookToBookResponseDto(repository.save(book));
     }
 
     public BookResponseDto consult(Integer bookNumber){
@@ -34,8 +33,7 @@ public class BookService {
                 .orElseThrow(
                         () -> new EntityNotFoundException("O livro de número '"+ bookNumber +"' não foi encontrado.")
                 ));
-        BookResponseDto book = mapper.bookToBookResponseDto(consultResult.orElse(null));
-        return book;
+        return mapper.bookToBookResponseDto(consultResult.orElse(null));
     }
 
     public List<BookResponseDto> consultAll(){

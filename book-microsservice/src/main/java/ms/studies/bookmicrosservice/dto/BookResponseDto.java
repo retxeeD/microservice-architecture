@@ -10,7 +10,7 @@ public class BookResponseDto{
         private String name;
         private Integer number;
 
-        public BookResponseDto(UUID uuid, String name, int number) {
+        public BookResponseDto(UUID uuid, String name, Integer number) {
                 this.id = uuid;
                 this.name = name;
                 this.number = number;
