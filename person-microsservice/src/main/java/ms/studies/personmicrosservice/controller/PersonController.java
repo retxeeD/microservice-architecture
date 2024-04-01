@@ -40,13 +40,13 @@ public class PersonController {
 
     @PutMapping("/rent-book")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void rentBook(@RequestBody RentBookRequestDto rentBook) throws BookRentErrors {
+    public void rentBook(@RequestBody @Valid RentBookRequestDto rentBook) throws Exception {
         service.rentBook(rentBook);
     }
 
     @PutMapping("/return-book")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void returnBook(@RequestBody RentBookRequestDto rentBook) throws BookRentErrors {
+    public void returnBook(@RequestBody @Valid RentBookRequestDto rentBook) throws BookRentErrors {
         service.returnBook(rentBook);
     }
 

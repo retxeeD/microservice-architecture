@@ -1,14 +1,18 @@
 package ms.studies.personmicrosservice.service;
 
+import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import ms.studies.personmicrosservice.dto.PersonRequestDto;
 import ms.studies.personmicrosservice.dto.PersonResponseDto;
 import ms.studies.personmicrosservice.dto.RentBookRequestDto;
 import ms.studies.personmicrosservice.entity.Person;
 import ms.studies.personmicrosservice.exception.BookRentErrors;
+import ms.studies.personmicrosservice.exception.ConsultNotFoundBook;
+import ms.studies.personmicrosservice.client.RemoteServicesClient;
 import ms.studies.personmicrosservice.mapper.PersonMapper;
 import ms.studies.personmicrosservice.repository.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
@@ -22,6 +26,9 @@ public class PersonService {
 
     @Autowired
     private PersonMapper mapper;
+
+    @Autowired
+    private RemoteServicesClient feignClient;
 
     public PersonResponseDto save(PersonRequestDto personRequestDto) {
         Person person = mapper.personRequestDtoToPerson(personRequestDto);
@@ -43,11 +50,18 @@ public class PersonService {
         repository.deleteById(id);
     }
 
-    public void rentBook(RentBookRequestDto rentBook) throws BookRentErrors {
+    public void rentBook(RentBookRequestDto rentBook) throws Exception {
         PersonResponseDto person = consult(rentBook.getDocument());
+
         if (person.getRentBook() != null){
             throw new BookRentErrors("A pessoa '"+ rentBook.getDocument() +"' nao pode alugar outor livro pois ja possui o livro '"+ person.getRentBook() +"' registrado.");
         }
+        try {
+            feignClient.getBook( rentBook.getRentBook());
+        }catch (FeignException ex){
+            throw new ConsultNotFoundBook(ex.contentUTF8(), HttpStatus.NOT_FOUND);
+        }
+
         if (repository.updateUserNameById(rentBook.getDocument(), rentBook.getRentBook()) != 1){
             throw new BookRentErrors("Ocorreu um erro ao alugar o livro, tente novamente.");
         }
