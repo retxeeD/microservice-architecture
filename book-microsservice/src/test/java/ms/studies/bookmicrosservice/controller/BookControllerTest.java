@@ -1,9 +1,7 @@
 package ms.studies.bookmicrosservice.controller;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import ms.studies.bookmicrosservice.dto.BookRequestDto;
-import ms.studies.bookmicrosservice.dto.BookResponseDto;
 import ms.studies.bookmicrosservice.exception.ApiErrors;
 import ms.studies.bookmicrosservice.service.BookService;
 import org.junit.jupiter.api.Test;
@@ -15,9 +13,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
-
-import java.util.UUID;
-
 
 @WebMvcTest(BookController.class)
 public class BookControllerTest {

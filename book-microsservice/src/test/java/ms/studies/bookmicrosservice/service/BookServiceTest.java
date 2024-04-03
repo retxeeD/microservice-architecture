@@ -6,7 +6,6 @@ import ms.studies.bookmicrosservice.dto.BookResponseDto;
 import ms.studies.bookmicrosservice.entity.Book;
 import ms.studies.bookmicrosservice.mapper.BookMapperImpl;
 import ms.studies.bookmicrosservice.repository.BookRepository;
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,7 +18,6 @@ import java.util.List;
 import java.util.Optional;
 import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.*;
@@ -86,7 +84,6 @@ public class BookServiceTest {
     @Test
     void deleteBookById(){
         Book book = bookGenerate();
-        when(repository.findById(Mockito.any())).thenReturn(Optional.of(book));
         ReflectionTestUtils.setField(service, "repository", repository);
         service.deleteBook(book.getId());
     }

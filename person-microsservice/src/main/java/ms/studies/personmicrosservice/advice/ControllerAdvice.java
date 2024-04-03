@@ -101,7 +101,6 @@ public class ControllerAdvice {
         return new ResponseEntity<>(ex.getErrors(), ex.getStatusCode());
     }
 
-
     /**@ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ApiErrors genericError(){
