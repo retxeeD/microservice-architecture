@@ -2,7 +2,6 @@ package ms.studies.personmicrosservice.advice;
 
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.exc.InvalidFormatException;
-import feign.FeignException;
 import jakarta.persistence.EntityNotFoundException;
 import ms.studies.personmicrosservice.exception.ApiErrors;
 import ms.studies.personmicrosservice.exception.BookRentErrors;
@@ -97,13 +96,13 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(ConsultNotFoundBook.class)
-    protected ResponseEntity<Object> consultNotFoundBook(ConsultNotFoundBook ex) {
+    public ResponseEntity<Object> consultNotFoundBook(ConsultNotFoundBook ex) {
         return new ResponseEntity<>(ex.getErrors(), ex.getStatusCode());
     }
 
-    /**@ExceptionHandler(Exception.class)
+    @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.BAD_GATEWAY)
     public ApiErrors genericError(){
         return new ApiErrors("Ocorreu um erro inesperado, estamos trabalhando para resolver.");
-    }**/
+    }
 }
