@@ -37,7 +37,7 @@ public class ControllerAdvice {
     }
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
-    public ResponseEntity<Object> NotReadableError(HttpMessageNotReadableException ex, HttpServletRequest request){
+    public ResponseEntity<Object> NotReadableValueError(HttpMessageNotReadableException ex, HttpServletRequest request){
         Throwable rootCause = ex.getRootCause();
         if (rootCause instanceof JsonMappingException jsonMappingException) {
             String fieldName =  jsonMappingException.getPath().stream()

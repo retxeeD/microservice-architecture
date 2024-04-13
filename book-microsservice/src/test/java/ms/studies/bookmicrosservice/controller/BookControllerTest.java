@@ -23,14 +23,14 @@ public class BookControllerTest {
     @MockBean
     BookService service;
 
+    ObjectMapper objectMapper = new ObjectMapper();
+
     /** Tests of the v1/book/register route **/
 
     @Test
     void validHandleValidationErrorsBookNameNull() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         BookRequestDto request = new BookRequestDto(null, 1);
         ApiErrors apiErrors = new ApiErrors("O campo 'name' é obrigatório.");
-
         this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/book/register")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(objectMapper.writeValueAsBytes(request)))
@@ -41,7 +41,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationErrorsBookWithoutName() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String request = "{\"number\": 1}";
         ApiErrors apiErrors = new ApiErrors("O campo 'name' é obrigatório.");
 
@@ -55,7 +54,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationErrorsBookNameBlank() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         BookRequestDto request = new BookRequestDto("      ", 1);
         ApiErrors apiErrors = new ApiErrors("O campo 'name' é obrigatório.");
 
@@ -69,7 +67,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationErrorsBookNumberNull() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         BookRequestDto request = new BookRequestDto("teste", null);
         ApiErrors apiErrors = new ApiErrors("O campo 'number' é obrigatório.");
 
@@ -83,7 +80,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationErrorsBookWithoutNumber() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String request = "{\"name\": \"Teste\"}";
         ApiErrors apiErrors = new ApiErrors("O campo 'number' é obrigatório.");
 
@@ -97,7 +93,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationErrorsBookNumberWrongType() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         String request = "{\"number\": \"Teste\"}";
         ApiErrors apiErrors = new ApiErrors("O campo 'number' aceita somente dados do tipo Integer.");
 
@@ -109,11 +104,21 @@ public class BookControllerTest {
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(apiErrors)));
     }
 
+    @Test
+    void validInvlaidContentTypeRegisterRoute() throws Exception{
+        ApiErrors apiErrors = new ApiErrors("O header 'Content-Type' recebe apenas o valor  'application/json'");
+
+        this.mockMvc.perform(MockMvcRequestBuilders.post("/v1/book/register")
+                        .contentType(MediaType.TEXT_XML))
+                .andDo(MockMvcResultHandlers.print())
+                .andExpect(MockMvcResultMatchers.status().is4xxClientError())
+                .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(apiErrors)));
+    }
+
     /** Tests of the v1/book/consult/{id} route **/
 
     @Test
     void validHandleValidationBookNumberPathparamWrongType() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         ApiErrors apiErrors = new ApiErrors("O parametro 'bookNumber' aceita somente dados do tipo Integer.");
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/book/consult/ABC")
@@ -125,7 +130,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationBookNumberPathparamblank() throws Exception{
-        ObjectMapper objectMapper = new ObjectMapper();
         ApiErrors apiErrors = new ApiErrors("O parametro 'bookNumber' é obrigatório na rota.");
 
         this.mockMvc.perform(MockMvcRequestBuilders.get("/v1/book/consult/   ")
@@ -139,7 +143,6 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationIdPathparamWrongType() throws Exception {
-        ObjectMapper objectMapper = new ObjectMapper();
         ApiErrors apiErrors = new ApiErrors("O parametro 'id' aceita somente dados do tipo UUID.");
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/book/delete/ABC")
@@ -151,11 +154,10 @@ public class BookControllerTest {
 
     @Test
     void validHandleValidationIdPathparamblank() throws Exception{
-        ObjectMapper objectMapper = new ObjectMapper();
         ApiErrors apiErrors = new ApiErrors("O parametro 'id' é obrigatório na rota.");
 
         this.mockMvc.perform(MockMvcRequestBuilders.delete("/v1/book/delete/   ")
-                        .contentType(MediaType.APPLICATION_JSON))
+                .contentType(MediaType.APPLICATION_JSON))
                 .andDo(MockMvcResultHandlers.print())
                 .andExpect(MockMvcResultMatchers.status().is4xxClientError())
                 .andExpect(MockMvcResultMatchers.content().json(objectMapper.writeValueAsString(apiErrors)));

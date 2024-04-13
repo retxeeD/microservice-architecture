@@ -9,6 +9,7 @@ import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingPathVariableException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
@@ -72,6 +73,12 @@ public class ApplicationControllerAdvice {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ApiErrors missingPathVariable(MissingPathVariableException ex){
         return new ApiErrors("O parametro '"+ ex.getVariableName() +"' é obrigatório na rota.");
+    }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    public ApiErrors invalidContentType(HttpMediaTypeNotSupportedException ex){
+        return new ApiErrors("O header 'Content-Type' recebe apenas o valor  'application/json'");
     }
 
     @ExceptionHandler(Exception.class)
