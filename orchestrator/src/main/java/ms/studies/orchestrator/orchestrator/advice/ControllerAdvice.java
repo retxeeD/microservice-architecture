@@ -11,8 +11,10 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindingResult;
+import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import java.util.List;
@@ -52,4 +54,10 @@ public class ControllerAdvice {
         }
         return new ResponseEntity<>( new ApiErrors("Revise a documentação, há campos sendo enviados com tipo incorreto.", request.getRequestURI()), HttpStatus.BAD_REQUEST);
     }
+
+    @ExceptionHandler(HttpMediaTypeNotSupportedException.class)
+    public ResponseEntity<Object> invalidContentType( HttpServletRequest request){
+        return new ResponseEntity<>(new ApiErrors("O header 'Content-Type' recebe apenas o valor  'application/json'", request.getRequestURI()), HttpStatus.BAD_REQUEST);
+    }
+
 }

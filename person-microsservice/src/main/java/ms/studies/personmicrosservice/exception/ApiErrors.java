@@ -1,20 +1,19 @@
 package ms.studies.personmicrosservice.exception;
 
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.Collections;
 import java.util.List;
 
-@Getter
+@AllArgsConstructor @NoArgsConstructor @Getter
 public class ApiErrors {
 
     private List<String> errors;
+    private String path;
 
-    public ApiErrors(List<String> errors){
-        this.errors = errors;
-    }
-
-    public ApiErrors(String message){
+    public ApiErrors(String message, String path){
         this.errors = Collections.singletonList(message);
-    }
-}
+        this.path = path;
+    }}
